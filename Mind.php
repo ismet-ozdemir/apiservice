@@ -3,7 +3,7 @@
 /**
  *
  * @package    Mind
- * @version    Release: 5.1.6
+ * @version    Release: 5.1.7
  * @license    GPL3
  * @author     Ali YILMAZ <aliyilmaz.work@gmail.com>
  * @category   Php Framework, Design pattern builder for PHP.
@@ -3029,9 +3029,12 @@ class Mind extends PDO
      */
     public function request(){
 
-        if(isset($_POST) OR isset($_GET) OR isset($_FILES)){
+        $jsonPOST = file_get_contents("php://input");
+        $jsonPOST = $this->is_json($jsonPOST) ? $this->json_decode($jsonPOST) : [];
 
-            foreach (array_merge($_POST, $_GET, $_FILES) as $name => $value) {
+        if(isset($_POST) OR isset($_GET) OR isset($_FILES) OR isset($jsonPOST)){
+
+            foreach (array_merge($_POST, $_GET, $_FILES, $jsonPOST) as $name => $value) {
                 
                 if(is_array($value)){
                     foreach($value as $key => $all ){
