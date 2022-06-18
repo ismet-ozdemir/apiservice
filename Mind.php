@@ -3,7 +3,7 @@
 /**
  *
  * @package    Mind
- * @version    Release: 5.1.7
+ * @version    Release: 5.1.8
  * @license    GPL3
  * @author     Ali YILMAZ <aliyilmaz.work@gmail.com>
  * @category   Php Framework, Design pattern builder for PHP.
@@ -2537,7 +2537,7 @@ class Mind extends PDO
                     // minimum say kuralı
                     case 'min-num':
                         if(!is_numeric($data[$column])){
-                            $this->errors[$column][$name] = 'Don\'t numeric.';
+                            $this->errors[$column][$name] = $message[$column][$name];
                         } else {
                             if($data[$column]<$extra){
                                 $this->errors[$column][$name] = $message[$column][$name];
@@ -2547,7 +2547,7 @@ class Mind extends PDO
                     // maksimum sayı kuralı
                     case 'max-num':
                         if(!is_numeric($data[$column])){
-                            $this->errors[$column][$name] = 'Don\'t numeric.';
+                            $this->errors[$column][$name] = $message[$column][$name];
                         } else {
                             if($data[$column]>$extra){
                                 $this->errors[$column][$name] = $message[$column][$name];
