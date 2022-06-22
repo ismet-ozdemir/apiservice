@@ -3,7 +3,7 @@
 /**
  *
  * @package    Mind
- * @version    Release: 5.1.8
+ * @version    Release: 5.1.9
  * @license    GPL3
  * @author     Ali YILMAZ <aliyilmaz.work@gmail.com>
  * @category   Php Framework, Design pattern builder for PHP.
@@ -2465,6 +2465,30 @@ class Mind extends PDO
     }
 
     /**
+     * ISBN validate
+     * @param string $isbn
+     * @param string|int|null $type
+     * @return bool
+     */
+    public function is_isbn($isbn, $type=null){
+
+        $regex = '/\b(?:ISBN(?:: ?| ))?((?:97[89])?\d{9}[\dx])\b/i';
+
+        if (preg_match($regex, str_replace('-', '', $isbn), $matches)) {
+            
+            if(in_array(mb_strlen($matches[1],'UTF-8'), [13,10]) and !isset($type)){
+                return true;
+            }
+
+            if(in_array(mb_strlen($matches[1],'UTF-8'), [13,10]) and isset($type)){
+                return ($type === mb_strlen($matches[1],'UTF-8'));
+            }
+
+        }
+        return false; // No valid ISBN found
+    }
+
+    /**
      * timecodeCompare
      * @param string $duration
      * @param string $timecode
@@ -2869,6 +2893,11 @@ class Mind extends PDO
                             break;
                         case 'decimal':
                             if(!$this->is_decimal($data[$column])){
+                                $this->errors[$column][$name] = $message[$column][$name];
+                            }
+                            break;
+                        case 'isbn':
+                            if(!$this->is_isbn($data[$column])){
                                 $this->errors[$column][$name] = $message[$column][$name];
                             }
                             break;
