@@ -3,7 +3,7 @@
 /**
  *
  * @package    Mind
- * @version    Release: 5.1.9
+ * @version    Release: 5.2.0
  * @license    GPL3
  * @author     Ali YILMAZ <aliyilmaz.work@gmail.com>
  * @category   Php Framework, Design pattern builder for PHP.
@@ -1809,6 +1809,63 @@ class Mind extends PDO
             $this->lang['haystack']=>$needle
         );
         return $this->amelia($this->lang['table'], $params, $this->lang['return']);
+    }
+
+    /**
+     * infinity Tree, recursive method
+     * @param array $data
+     * @param string $parentColumn
+     * @param string $childColumn
+     * @param string $idColumn
+     * @param int $parentId
+     * @return array $output
+     */
+    public function infinityTree($data, $parentColumn = 'parent', $childrenName = 'children', $idColumn = 'id', $parentId = 0)
+    {
+        $output = array();
+        foreach ($data as $item) {
+            
+            if ($item[$parentColumn] == $parentId) {
+    
+                $children = $this->infinityTree($data, $parentColumn, $childrenName, $idColumn, $item[$idColumn]);
+                if ($children) {
+                    $item[$childrenName] = $children;
+                } else {
+                    $item[$childrenName] = array();
+                }
+                $output[] = $item;
+            }
+        }
+        return $output;
+    }
+
+    /**
+     * selectTree
+     * @param array $data
+     * @param string|null $value
+     * @param string $childrenName
+     * @param string $valName
+     * @param string $textName
+     * @param int $level
+     * @return string $output
+     */
+    public function selectTree($data, $value = null, $childrenName = 'children', $valName="id", $textName="name", $level = 0){
+
+        $output = "";
+        $selected = "";
+        
+        foreach ($data as $key => $row) { 
+            if(!is_null($value)) {
+                if($value == $row[$valName]){
+                    $selected = ' selected';
+                }
+            }
+            $output .= "<option value= \"".$row[$valName]."\"".$selected.">".str_repeat('--',$level).' '.$row[$textName]."</option>" ."\n"; 
+            if($row[$childrenName]){
+                $output .= $this->selectTree($row[$childrenName], $value, $childrenName, $valName, $textName, $level+1);
+            }
+        } 
+        return $output;
     }
 
     /**
