@@ -3,7 +3,7 @@
 /**
  *
  * @package    Mind
- * @version    Release: 5.2.0
+ * @version    Release: 5.2.1
  * @license    GPL3
  * @author     Ali YILMAZ <aliyilmaz.work@gmail.com>
  * @category   Php Framework, Design pattern builder for PHP.
@@ -1860,12 +1860,47 @@ class Mind extends PDO
                     $selected = ' selected';
                 }
             }
-            $output .= "<option value= \"".$row[$valName]."\"".$selected.">".str_repeat('--',$level).' '.$row[$textName]."</option>" ."\n"; 
+            $output .= "<option value='".$row[$valName]."'".$selected.">".str_repeat('--',$level).' '.$row[$textName]."</option>" ."<br>"; 
             if($row[$childrenName]){
                 $output .= $this->selectTree($row[$childrenName], $value, $childrenName, $valName, $textName, $level+1);
             }
         } 
         return $output;
+    }
+
+    /**
+     * is_branch
+     * @param array $data
+     * @param int|string $id
+     * @param int|string $parent
+     * @param string $idColumn
+     * @param string $parentColumn
+     * @return boolean
+     */
+    public function is_branch($data, $id, $parent, $idColumn = 'id', $parentColumn = 'parent'){
+
+        if($id == $parent){
+            return true;
+        }
+        
+        $branches = [];
+        foreach ($data as $key => $branch) {
+            if($branch[$parentColumn] == $id OR $branch[$idColumn]==$id){
+                $branches[] = $branch[$idColumn];
+            } else {
+                if(in_array($branch[$parentColumn], $branches)){
+                    $branches[] = $branch[$idColumn];
+                }
+            }
+
+        }
+
+        if(in_array($parent, $branches)){
+            return true;
+        } else {
+            return false;
+        }
+        
     }
 
     /**
