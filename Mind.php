@@ -3,7 +3,7 @@
 /**
  *
  * @package    Mind
- * @version    Release: 5.2.1
+ * @version    Release: 5.2.2
  * @license    GPL3
  * @author     Ali YILMAZ <aliyilmaz.work@gmail.com>
  * @category   Php Framework, Design pattern builder for PHP.
@@ -1844,25 +1844,26 @@ class Mind extends PDO
      * @param array $data
      * @param string|null $value
      * @param string $childrenName
-     * @param string $valName
+     * @param string $idName
+     * @param string $valColumn
      * @param string $textName
      * @param int $level
      * @return string $output
      */
-    public function selectTree($data, $value = null, $childrenName = 'children', $valName="id", $textName="name", $level = 0){
+    public function selectTree($data, $value = null, $childrenName = 'children', $idName="id", $valColumn = 'id', $textName="name", $level = 0){
 
         $output = "";
         $selected = "";
         
         foreach ($data as $key => $row) { 
             if(!is_null($value)) {
-                if($value == $row[$valName]){
+                if($value == $row[$idName]){
                     $selected = ' selected';
                 }
             }
-            $output .= "<option value='".$row[$valName]."'".$selected.">".str_repeat('--',$level).' '.$row[$textName]."</option>" ."<br>"; 
-            if($row[$childrenName]){
-                $output .= $this->selectTree($row[$childrenName], $value, $childrenName, $valName, $textName, $level+1);
+            $output .= "<option value=\"".$row[$valColumn]."\"".$selected.">".str_repeat('--',$level).' '.$row[$textName]."</option>" ."<br>"; 
+            if(isset($row[$childrenName])){
+                $output .= $this->selectTree($row[$childrenName], $value, $childrenName, $idName, $valColumn, $textName, $level+1);
             }
         } 
         return $output;
