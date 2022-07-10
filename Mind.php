@@ -3,7 +3,7 @@
 /**
  *
  * @package    Mind
- * @version    Release: 5.2.2
+ * @version    Release: 5.2.3
  * @license    GPL3
  * @author     Ali YILMAZ <aliyilmaz.work@gmail.com>
  * @category   Php Framework, Design pattern builder for PHP.
@@ -1853,9 +1853,9 @@ class Mind extends PDO
     public function selectTree($data, $value = null, $childrenName = 'children', $idName="id", $valColumn = 'id', $textName="name", $level = 0){
 
         $output = "";
-        $selected = "";
         
         foreach ($data as $key => $row) { 
+            $selected = "";
             if(!is_null($value)) {
                 if($value == $row[$idName]){
                     $selected = ' selected';
