@@ -3,7 +3,7 @@
 /**
  *
  * @package    Mind
- * @version    Release: 5.2.3
+ * @version    Release: 5.2.4
  * @license    GPL3
  * @author     Ali YILMAZ <aliyilmaz.work@gmail.com>
  * @category   Php Framework, Design pattern builder for PHP.
@@ -1812,99 +1812,6 @@ class Mind extends PDO
     }
 
     /**
-     * infinity Tree, recursive method
-     * @param array $data
-     * @param string $parentColumn
-     * @param string $childColumn
-     * @param string $idColumn
-     * @param int $parentId
-     * @return array $output
-     */
-    public function infinityTree($data, $parentColumn = 'parent', $childrenName = 'children', $idColumn = 'id', $parentId = 0)
-    {
-        $output = array();
-        foreach ($data as $item) {
-            
-            if ($item[$parentColumn] == $parentId) {
-    
-                $children = $this->infinityTree($data, $parentColumn, $childrenName, $idColumn, $item[$idColumn]);
-                if ($children) {
-                    $item[$childrenName] = $children;
-                } else {
-                    $item[$childrenName] = array();
-                }
-                $output[] = $item;
-            }
-        }
-        return $output;
-    }
-
-    /**
-     * selectTree
-     * @param array $data
-     * @param string|null $value
-     * @param string $childrenName
-     * @param string $idName
-     * @param string $valColumn
-     * @param string $textName
-     * @param int $level
-     * @return string $output
-     */
-    public function selectTree($data, $value = null, $childrenName = 'children', $idName="id", $valColumn = 'id', $textName="name", $level = 0){
-
-        $output = "";
-        
-        foreach ($data as $key => $row) { 
-            $selected = "";
-            if(!is_null($value)) {
-                if($value == $row[$idName]){
-                    $selected = ' selected';
-                }
-            }
-            $output .= "<option value=\"".$row[$valColumn]."\"".$selected.">".str_repeat('--',$level).' '.$row[$textName]."</option>" ."<br>"; 
-            if(isset($row[$childrenName])){
-                $output .= $this->selectTree($row[$childrenName], $value, $childrenName, $idName, $valColumn, $textName, $level+1);
-            }
-        } 
-        return $output;
-    }
-
-    /**
-     * is_branch
-     * @param array $data
-     * @param int|string $id
-     * @param int|string $parent
-     * @param string $idColumn
-     * @param string $parentColumn
-     * @return boolean
-     */
-    public function is_branch($data, $id, $parent, $idColumn = 'id', $parentColumn = 'parent'){
-
-        if($id == $parent){
-            return true;
-        }
-        
-        $branches = [];
-        foreach ($data as $key => $branch) {
-            if($branch[$parentColumn] == $id OR $branch[$idColumn]==$id){
-                $branches[] = $branch[$idColumn];
-            } else {
-                if(in_array($branch[$parentColumn], $branches)){
-                    $branches[] = $branch[$idColumn];
-                }
-            }
-
-        }
-
-        if(in_array($parent, $branches)){
-            return true;
-        } else {
-            return false;
-        }
-        
-    }
-
-    /**
      * Database verification.
      *
      * @param string $dbname
@@ -2097,7 +2004,7 @@ class Mind extends PDO
      * */
     public function is_color($color){
 
-        $colorArray = json_decode('["AliceBlue","AntiqueWhite","Aqua","Aquamarine","Azure","Beige","Bisque","Black","BlanchedAlmond","Blue","BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","CornflowerBlue","Cornsilk","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGrey","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","DarkOrange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGray","DarkSlateGrey","DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed ","Indigo ","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","RebeccaPurple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke","Yellow","YellowGreen"]', true);
+        $colorArray = $this->json_decode('["AliceBlue","AntiqueWhite","Aqua","Aquamarine","Azure","Beige","Bisque","Black","BlanchedAlmond","Blue","BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","CornflowerBlue","Cornsilk","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGrey","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","DarkOrange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGray","DarkSlateGrey","DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed ","Indigo ","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","RebeccaPurple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke","Yellow","YellowGreen"]', true);
 
         if(in_array($color, $colorArray)){
             return true;
@@ -2593,6 +2500,32 @@ class Mind extends PDO
         }
         return false;
     }
+
+    /**
+     * is_branch
+     * @param array $data
+     * @param int|string $id
+     * @param int|string $parent
+     * @param string $idColumn
+     * @param string $parentColumn
+     * @return boolean
+     */
+    public function is_branch($data, $id, $parent, $idColumn = 'id', $parentColumn = 'parent'){
+
+        if($id == $parent){
+            return true;
+        }
+        
+        $branches = $this->branches($data, $id, $idColumn, $parentColumn);
+
+        if(in_array($parent, $branches)){
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
+
 
     /**
      * Validation
@@ -4305,7 +4238,87 @@ class Mind extends PDO
         
     }
 
+    /**
+     * infinity Tree, recursive method
+     * @param array $data
+     * @param string $parentColumn
+     * @param string $childColumn
+     * @param string $idColumn
+     * @param int $parentId
+     * @return array $output
+     */
+    public function infinityTree($data, $parentColumn = 'parent', $childrenName = 'children', $idColumn = 'id', $parentId = 0)
+    {
+        $output = array();
+        foreach ($data as $item) {
+            
+            if ($item[$parentColumn] == $parentId) {
     
+                $children = $this->infinityTree($data, $parentColumn, $childrenName, $idColumn, $item[$idColumn]);
+                if ($children) {
+                    $item[$childrenName] = $children;
+                } else {
+                    $item[$childrenName] = array();
+                }
+                $output[] = $item;
+            }
+        }
+        return $output;
+    }
+
+    /**
+     * selectTree
+     * @param array $data
+     * @param string|null $value
+     * @param string $childrenName
+     * @param string $idName
+     * @param string $valColumn
+     * @param string $textName
+     * @param int $level
+     * @return string $output
+     */
+    public function selectTree($data, $value = null, $childrenName = 'children', $idName="id", $valColumn = 'id', $textName="name", $level = 0){
+
+        $output = "";
+        
+        foreach ($data as $key => $row) { 
+            $selected = "";
+            if(!is_null($value)) {
+                if($value == $row[$idName]){
+                    $selected = ' selected';
+                }
+            }
+            $output .= "<option value=\"".$row[$valColumn]."\"".$selected.">".str_repeat('--',$level).' '.$row[$textName]."</option>" ."<br>"; 
+            if(isset($row[$childrenName])){
+                $output .= $this->selectTree($row[$childrenName], $value, $childrenName, $idName, $valColumn, $textName, $level+1);
+            }
+        } 
+        return $output;
+    }
+
+    /**
+     * branches
+     * @param array $data
+     * @param string|int $id
+     * @param string $idColumn
+     * @param string $parentColumn
+     * @return array
+     */
+    public function branches($data, $id, $idColumn = 'id', $parentColumn = 'parent') {
+        
+        $branches = [$id];
+        foreach ($data as $branch) {
+            if($branch[$parentColumn] == $id){
+                if(in_array($branch[$idColumn], $branches)){
+                    $branches[] = $branch[$idColumn];
+                }
+                $branches = array_merge($branches, $this->branches($data, $branch[$idColumn]));
+            }
+        }
+        sort($branches);
+        return $branches;   
+    }
+
     /**
      * Detecting an operating system
      * @return string
