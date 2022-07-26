@@ -3,7 +3,7 @@
 /**
  *
  * @package    Mind
- * @version    Release: 5.2.4
+ * @version    Release: 5.2.5
  * @license    GPL3
  * @author     Ali YILMAZ <aliyilmaz.work@gmail.com>
  * @category   Php Framework, Design pattern builder for PHP.
@@ -40,8 +40,8 @@ class Mind extends PDO
     public  $errors         =   [];
 
     private $db             =   [
-        'drive'     =>  'mysql', // mysql, sqlite
-        'host'      =>  'localhost',
+        'drive'     =>  'mysql', // mysql, sqlite, sqlsrv
+        'host'      =>  'localhost', // for sqlsrv: www.example.com\\MSSQLSERVER,'.(int)1433
         'dbname'    =>  'mydb', // mydb, app/migration/mydb.sqlite
         'username'  =>  'root',
         'password'  =>  '',
@@ -4302,19 +4302,24 @@ class Mind extends PDO
      * @param string|int $id
      * @param string $idColumn
      * @param string $parentColumn
+     * @param string $exportColumn
      * @return array
      */
-    public function branches($data, $id, $idColumn = 'id', $parentColumn = 'parent') {
+    public function branches($data, $id, $idColumn = 'id', $parentColumn = 'parent', $exportColumn = 'id') {
         
-        $branches = [$id];
+        $branches = [];
         foreach ($data as $branch) {
+            if(!in_array($branch[$exportColumn], $branches)){
+                $branches[] = $branch[$exportColumn];
+            }
             if($branch[$parentColumn] == $id){
-                if(in_array($branch[$idColumn], $branches)){
-                    $branches[] = $branch[$idColumn];
+                if(!in_array($branch[$exportColumn], $branches)){
+                    $branches[] = $branch[$exportColumn];
                 }
-                $branches = array_merge($branches, $this->branches($data, $branch[$idColumn]));
+                $branches = array_merge($branches, $this->branches($data, $branch[$idColumn], $idColumn, $parentColumn, $exportColumn));
             }
         }
+        
         sort($branches);
         return $branches;   
     }
