@@ -3,7 +3,7 @@
 /**
  *
  * @package    Mind
- * @version    Release: 5.2.5
+ * @version    Release: 5.2.6
  * @license    GPL3
  * @author     Ali YILMAZ <aliyilmaz.work@gmail.com>
  * @category   Php Framework, Design pattern builder for PHP.
@@ -62,7 +62,9 @@ class Mind extends PDO
 
         /* server limit settings */
         ini_set('memory_limit', '-1');
-        (strpos(ini_get('disable_functions'), 'set_time_limit') === false) ?: set_time_limit(0);
+        if(!in_array('set_time_limit', explode(',', ini_get('disable_functions')))) {
+            set_time_limit(0);
+        }
         
         /* Creating the timestamp */
         date_default_timezone_set($this->timezone);
@@ -2502,32 +2504,6 @@ class Mind extends PDO
     }
 
     /**
-     * is_branch
-     * @param array $data
-     * @param int|string $id
-     * @param int|string $parent
-     * @param string $idColumn
-     * @param string $parentColumn
-     * @return boolean
-     */
-    public function is_branch($data, $id, $parent, $idColumn = 'id', $parentColumn = 'parent'){
-
-        if($id == $parent){
-            return true;
-        }
-        
-        $branches = $this->branches($data, $id, $idColumn, $parentColumn);
-
-        if(in_array($parent, $branches)){
-            return true;
-        } else {
-            return false;
-        }
-        
-    }
-
-
-    /**
      * Validation
      * 
      * @param array $rule
@@ -4236,92 +4212,6 @@ class Mind extends PDO
 
         return $result;
         
-    }
-
-    /**
-     * infinity Tree, recursive method
-     * @param array $data
-     * @param string $parentColumn
-     * @param string $childColumn
-     * @param string $idColumn
-     * @param int $parentId
-     * @return array $output
-     */
-    public function infinityTree($data, $parentColumn = 'parent', $childrenName = 'children', $idColumn = 'id', $parentId = 0)
-    {
-        $output = array();
-        foreach ($data as $item) {
-            
-            if ($item[$parentColumn] == $parentId) {
-    
-                $children = $this->infinityTree($data, $parentColumn, $childrenName, $idColumn, $item[$idColumn]);
-                if ($children) {
-                    $item[$childrenName] = $children;
-                } else {
-                    $item[$childrenName] = array();
-                }
-                $output[] = $item;
-            }
-        }
-        return $output;
-    }
-
-    /**
-     * selectTree
-     * @param array $data
-     * @param string|null $value
-     * @param string $childrenName
-     * @param string $idName
-     * @param string $valColumn
-     * @param string $textName
-     * @param int $level
-     * @return string $output
-     */
-    public function selectTree($data, $value = null, $childrenName = 'children', $idName="id", $valColumn = 'id', $textName="name", $level = 0){
-
-        $output = "";
-        
-        foreach ($data as $key => $row) { 
-            $selected = "";
-            if(!is_null($value)) {
-                if($value == $row[$idName]){
-                    $selected = ' selected';
-                }
-            }
-            $output .= "<option value=\"".$row[$valColumn]."\"".$selected.">".str_repeat('--',$level).' '.$row[$textName]."</option>" ."<br>"; 
-            if(isset($row[$childrenName])){
-                $output .= $this->selectTree($row[$childrenName], $value, $childrenName, $idName, $valColumn, $textName, $level+1);
-            }
-        } 
-        return $output;
-    }
-
-    /**
-     * branches
-     * @param array $data
-     * @param string|int $id
-     * @param string $idColumn
-     * @param string $parentColumn
-     * @param string $exportColumn
-     * @return array
-     */
-    public function branches($data, $id, $idColumn = 'id', $parentColumn = 'parent', $exportColumn = 'id') {
-        
-        $branches = [];
-        foreach ($data as $branch) {
-            if(!in_array($branch[$exportColumn], $branches)){
-                $branches[] = $branch[$exportColumn];
-            }
-            if($branch[$parentColumn] == $id){
-                if(!in_array($branch[$exportColumn], $branches)){
-                    $branches[] = $branch[$exportColumn];
-                }
-                $branches = array_merge($branches, $this->branches($data, $branch[$idColumn], $idColumn, $parentColumn, $exportColumn));
-            }
-        }
-        
-        sort($branches);
-        return $branches;   
     }
 
     /**
