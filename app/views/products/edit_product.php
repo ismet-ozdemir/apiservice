@@ -103,9 +103,10 @@
                                     <select class="form-select" name="product_lang" id="product_lang">
                                         <option value="">Select</option>
                                         <?php foreach($this->languages() as $key => $lang) { ?>
-                                            <?php if($product['product_lang']==$key) {?> <option value="<?=$key;?>"<?php echo ' selected';?>><?=$lang['name'];?> (<?=$lang['nativeName'];?>)</option><?php } else{?>
+                                            <?php if($product['product_lang']==$key) {?> <option value="<?=$key;?>"<?php echo ' selected';?>><?=$lang['name'];?> (<?=$lang['nativeName'];?>)</option>
+                                            <?php } else {?>
                                                 <option value="<?=$key;?>"><?=$lang['name'];?> (<?=$lang['nativeName'];?>)</option>
-                                        <?php }?>
+                                            <?php }?>
                                         <?php } ?>
                                     </select>
                                 </div>
